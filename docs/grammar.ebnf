@@ -1,0 +1,26 @@
+/**
+ * Grammar specification for RIONParser in EBNF
+ *
+ * Examples
+ * Legal compounds:
+ * - ethyne
+ * - prop-1-ene
+ * - propa-1,2-diene
+ * - hex-2-en-4-yne
+ * - hexa-1,3-diene
+ *
+ * Legal, however not semantic compounds:
+ * - eth-1-yne
+ * - propene
+ * - propa-5-diene
+ * - hexa-2-en-2,3-yne
+ * - hexa-1,3-pentaene
+ * - methyne
+ *
+**/
+compound          ::= stem "a"? ( ( "-" locants "-" )? multiplying_affix? suffix )* "e"
+locants           ::= digit ("," digit)*
+stem              ::= "meth" | "eth" | "prop" | "but" | "pent" | "hex" | "hept" | "oct" | "non" | "dec"
+multiplying_affix ::= "di" | "tri" | "tetra" | "penta" | "hexa" | "hepta" | "octa" | "nona"
+suffix            ::= "an" | "en" | "yn"
+digit             ::= "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
