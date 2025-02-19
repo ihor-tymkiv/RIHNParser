@@ -19,7 +19,7 @@ class AtomTest {
         atom.addBond(new Atom(ChemicalElement.Carbon), 2);
         atom.addBond(new Atom(ChemicalElement.Carbon), 2);
 
-        assertEquals(atom.getBondedAtoms().size(), 2);
+        assertEquals(2, atom.getBondedAtoms().size());
     }
 
     @Test

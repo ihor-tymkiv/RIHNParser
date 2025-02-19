@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.ihortymkiv</groupId>
-    <artifactId>Rudimentary-Organic-IUPAC-Parser</artifactId>
+    <artifactId>rudimentary-iupac-hydrocarbon-parser</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>

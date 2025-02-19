@@ -1,8 +1,10 @@
 /**
- * Grammar specification for RIONParser in EBNF
+ * Grammar specification for RIHNParser in EBNF
  *
  * Examples
  * Legal compounds:
+ * - cyclopropane
+ * - cyclohexa-1,3,5-triene
  * - ethyne
  * - prop-1-ene
  * - propa-1,2-diene
@@ -10,6 +12,7 @@
  * - hexa-1,3-diene
  *
  * Legal, however not semantic compounds:
+ * - cyclomethane
  * - eth-1-yne
  * - propene
  * - propa-5-diene
@@ -18,7 +21,7 @@
  * - methyne
  *
 **/
-compound          ::= stem "a"? ( ( "-" locants "-" )? multiplying_affix? suffix )* "e"
+compound          ::= "cyclo"? stem "a"? ( ( "-" locants "-" )? multiplying_affix? suffix )+ "e"
 locants           ::= digit ("," digit)*
 stem              ::= "meth" | "eth" | "prop" | "but" | "pent" | "hex" | "hept" | "oct" | "non" | "dec"
 multiplying_affix ::= "di" | "tri" | "tetra" | "penta" | "hexa" | "hepta" | "octa" | "nona"
