@@ -2,6 +2,7 @@ package com.ihortymkiv.chemistry;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Representation of an atom.<p>
@@ -30,11 +31,8 @@ public class Atom {
     private int valence;
 
     public Atom(ChemicalElement chemicalElement) {
-        if (chemicalElement == null) {
-            throw new IllegalArgumentException("Chemical element cannot be null");
-        }
         this.id = ++Atom.counter;
-        this.chemicalElement = chemicalElement;
+        this.chemicalElement = Objects.requireNonNull(chemicalElement, "ChemicalElement cannot be null.");
         this.valence = chemicalElement.normalValence();
     }
 
@@ -52,9 +50,7 @@ public class Atom {
      * @throws BondAlreadyExistsException if bond between atoms exists
      */
     public void addBond(Atom to, int bondOrder) {
-        if (to == null) {
-            throw new IllegalArgumentException("Atom cannot be null.");
-        }
+        Objects.requireNonNull(to, "To cannot be null.");
         if (this.equals(to)) {
             throw new IllegalArgumentException("Atom cannot bond to an instance of itself.");
         }

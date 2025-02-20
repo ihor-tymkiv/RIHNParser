@@ -17,6 +17,7 @@ public class Compound {
     }
 
     public void addAtom(Atom atom) {
+        Objects.requireNonNull(atom, "Atom cannot be null.");
         this.atoms.add(atom);
     }
 }
