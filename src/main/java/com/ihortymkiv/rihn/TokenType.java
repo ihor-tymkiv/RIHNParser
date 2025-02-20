@@ -2,11 +2,13 @@ package com.ihortymkiv.rihn;
 
 enum TokenType {
     // Single character tokens
-    CONNECTOR, // "a"
+    DIGIT,
+    HYPHEN,
+    COMMA,
     ENDING, // "e"
 
     // Multiple character tokens
-    CYCLO, STEM, LOCANTS, MULTIPLYING_AFFIX, SUFFIX,
+    CYCLO, WORD,
 
     EOF
 }
