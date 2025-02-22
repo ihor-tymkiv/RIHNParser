@@ -21,8 +21,9 @@
  * - methyne
  *
 **/
-compound          ::= "cyclo"? stem "a"? ( ( "-" locants "-" )? multiplying_affix? suffix )+ "e"
-locants           ::= digit ("," digit)*
+compound          ::= "cyclo"? stem "a"? functional_group+ "e"
+functional_group  ::= locants? multiplying_affix? suffix
+locants           ::= "-" digit ("," digit)* "-"
 stem              ::= "meth" | "eth" | "prop" | "but" | "pent" | "hex" | "hept" | "oct" | "non" | "dec"
 multiplying_affix ::= "di" | "tri" | "tetra" | "penta" | "hexa" | "hepta" | "octa" | "nona"
 suffix            ::= "an" | "en" | "yn"
