@@ -4,13 +4,12 @@ import java.util.List;
 import java.util.Objects;
 
 class Compound extends ASTNode {
-    Compound(boolean isCyclic, String stem, boolean hasConnector, List<FunctionalGroup> functionalGroups) {
+    Compound(boolean isCyclic, String stem, List<FunctionalGroup> groups) {
         Objects.requireNonNull(stem, "Stem cannot be null.");
-        Objects.requireNonNull(functionalGroups, "FunctionalGroups cannot be null.");
+        Objects.requireNonNull(groups, "Groups cannot be null.");
         this.isCyclic = isCyclic;
         this.stem = stem;
-        this.hasConnector = hasConnector;
-        this.functionalGroups = List.copyOf(functionalGroups);
+        this.groups = List.copyOf(groups);
     }
 
     @Override
@@ -18,6 +17,19 @@ class Compound extends ASTNode {
 
     final boolean isCyclic;
     final String stem;
-    final boolean hasConnector;
-    final List<FunctionalGroup> functionalGroups;
+    final List<FunctionalGroup> groups;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Compound compound)) return false;
+        return isCyclic == compound.isCyclic &&
+               Objects.equals(stem, compound.stem) &&
+               Objects.equals(groups, compound.groups);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(isCyclic, stem, groups);
+    }
 }

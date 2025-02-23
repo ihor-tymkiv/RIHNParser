@@ -16,4 +16,18 @@ class FunctionalGroup extends ASTNode {
     final Locants locants;
     final String multiplyingAffix;
     final String suffix;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FunctionalGroup functionalGroup)) return false;
+        return Objects.equals(locants, functionalGroup.locants) &&
+               Objects.equals(multiplyingAffix, functionalGroup.multiplyingAffix) &&
+               Objects.equals(suffix, functionalGroup.suffix);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(locants, multiplyingAffix, suffix);
+    }
 }
