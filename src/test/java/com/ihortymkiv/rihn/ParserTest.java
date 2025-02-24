@@ -6,14 +6,26 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import static com.ihortymkiv.rihn.TokenType.*;
+
 class ParserTest {
+
+    private Token word(String lexeme, int location) {
+        return new Token(WORD, lexeme, location);
+    }
 
     @Test
     void shouldParseSimpleCyclicCompound() {
         List<Token> tokens = new Lexer("cyclopropane").scanTokens();
         Compound compound = new Parser(tokens).parse();
         Compound expected = new Compound(
-                true, "prop", List.of(new FunctionalGroup(null, null, "an"))
+                true,
+                new Stem(word("prop", 5), 3),
+                List.of(
+                        new FunctionalGroup(
+                                null, null, new Suffix(word("an", 9), 1)
+                        )
+                )
         );
         assertEquals(expected, compound);
     }
@@ -24,8 +36,14 @@ class ParserTest {
         Compound compound = new Parser(tokens).parse();
         Compound expected = new Compound(
                 true,
-                "hex",
-                List.of(new FunctionalGroup(new Locants(List.of(1, 3, 5)), "tri", "en"))
+                new Stem(word("hex", 5), 6),
+                List.of(
+                        new FunctionalGroup(
+                                new Locants(List.of(1, 3, 5)),
+                                new MultiplyingAffix(word("tri", 16), 3),
+                                new Suffix(word("en", 19), 2)
+                        )
+                )
         );
         assertEquals(expected, compound);
     }
@@ -35,7 +53,15 @@ class ParserTest {
         List<Token> tokens = new Lexer("ethyne").scanTokens();
         Compound compound = new Parser(tokens).parse();
         Compound expected = new Compound(
-                false, "eth", List.of(new FunctionalGroup(null, null, "yn"))
+                false,
+                new Stem(word("eth", 0), 2),
+                List.of(
+                        new FunctionalGroup(
+                                null,
+                                null,
+                                new Suffix(word("yn", 3), 3)
+                        )
+                )
         );
         assertEquals(expected, compound);
     }
@@ -46,8 +72,14 @@ class ParserTest {
         Compound compound = new Parser(tokens).parse();
         Compound expected = new Compound(
                 false,
-                "prop",
-                List.of(new FunctionalGroup(new Locants(List.of(1)), null, "en"))
+                new Stem(word("prop", 0), 3),
+                List.of(
+                        new FunctionalGroup(
+                                new Locants(List.of(1)),
+                                null,
+                                new Suffix(word("en", 7), 2)
+                        )
+                )
         );
         assertEquals(expected, compound);
     }
@@ -58,8 +90,15 @@ class ParserTest {
         Compound compound = new Parser(tokens).parse();
         Compound expected = new Compound(
                 false,
-                "prop",
-                List.of(new FunctionalGroup(new Locants(List.of(1, 2)), "di", "en"))
+                new Stem(word("prop", 0), 3),
+                List.of(
+                        new FunctionalGroup(
+                                new Locants(
+                                        List.of(1, 2)),
+                                new MultiplyingAffix(word("di", 10), 2),
+                                new Suffix(word("en", 12), 2)
+                        )
+                )
         );
         assertEquals(expected, compound);
     }
@@ -70,10 +109,18 @@ class ParserTest {
         Compound compound = new Parser(tokens).parse();
         Compound expected = new Compound(
                 false,
-                "hept",
+                new Stem(word("hept", 0), 7),
                 List.of(
-                        new FunctionalGroup(new Locants(List.of(1, 5)), "di", "en"),
-                        new FunctionalGroup(new Locants(List.of(3)), null, "yn")
+                        new FunctionalGroup(
+                                new Locants(List.of(1, 5)),
+                                new MultiplyingAffix(word("di", 10), 2),
+                                new Suffix(word("en", 12), 2)
+                        ),
+                        new FunctionalGroup(
+                                new Locants(List.of(3)),
+                                null,
+                                new Suffix(word("yn", 17), 3)
+                        )
                 )
         );
         assertEquals(expected, compound);
@@ -89,10 +136,10 @@ class ParserTest {
 
     @Test
     void shouldThrowForMissingSuffix() {
-        List<Token> tokens = new Lexer("cyclomethe").scanTokens();
+        List<Token> tokens = new Lexer("cyclomethne").scanTokens();
         ParserException exception = assertThrows(ParserException.class, () -> new Parser(tokens).parse());
         assertTrue(exception.getMessage().contains("Suffix expected"));
-        assertEquals("e", exception.getToken().lexeme());
+        assertEquals("n", exception.getToken().lexeme());
     }
 
     @Test
@@ -108,12 +155,12 @@ class ParserTest {
         List<Token> tokens = new Lexer("prop-5-diene").scanTokens();
         ParserException exception = assertThrows(ParserException.class, () -> new Parser(tokens).parse());
         assertTrue(exception.getMessage().contains("Suffix expected"));
-        assertEquals("e", exception.getToken().lexeme());
+        assertEquals("dien", exception.getToken().lexeme());
     }
 
     @Test
     void shouldThrowForCompoundWithInvalidEnding() {
-        List<Token> tokens = new Lexer("prop-5-enero").scanTokens();
+        List<Token> tokens = new Lexer("prop-5-en").scanTokens();
         ParserException exception = assertThrows(ParserException.class, () -> new Parser(tokens).parse());
         assertTrue(exception.getMessage().contains("Ending expected"));
         assertEquals("", exception.getToken().lexeme());

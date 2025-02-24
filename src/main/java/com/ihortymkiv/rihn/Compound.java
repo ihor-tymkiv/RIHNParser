@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Objects;
 
 class Compound extends ASTNode {
-    Compound(boolean isCyclic, String stem, List<FunctionalGroup> groups) {
+    Compound(boolean isCyclic, Stem stem, List<FunctionalGroup> groups) {
         Objects.requireNonNull(stem, "Stem cannot be null.");
         Objects.requireNonNull(groups, "Groups cannot be null.");
         this.isCyclic = isCyclic;
@@ -16,7 +16,7 @@ class Compound extends ASTNode {
     <R> R accept(ASTNodeVisitor<R> visitor) { return visitor.visit(this); }
 
     final boolean isCyclic;
-    final String stem;
+    final Stem stem;
     final List<FunctionalGroup> groups;
 
     @Override
