@@ -15,115 +15,116 @@ class ParserTest {
     }
 
     @Test
-    void shouldParseSimpleCyclicCompound() {
+    void shouldParseSimpleCyclicHydrocarbon() {
         List<Token> tokens = new Lexer("cyclopropane").scanTokens();
-        Compound compound = new Parser(tokens).parse();
-        Compound expected = new Compound(
+        Hydrocarbon hydrocarbon = new Parser(tokens).parse();
+        Hydrocarbon expected = new Hydrocarbon(
                 true,
                 new Stem(word("prop", 5), 3),
-                List.of(
-                        new FunctionalGroup(
-                                null, null, new Suffix(word("an", 9), 1)
-                        )
-                )
+                new Type.Alkane()
         );
-        assertEquals(expected, compound);
+        assertEquals(expected, hydrocarbon);
     }
 
     @Test
-    void shouldParseCyclicCompoundWithLocants() {
+    void shouldParseCyclicHydrocarbonWithLocants() {
         List<Token> tokens = new Lexer("cyclohexa-1,3,5-triene").scanTokens();
-        Compound compound = new Parser(tokens).parse();
-        Compound expected = new Compound(
+        Hydrocarbon hydrocarbon = new Parser(tokens).parse();
+        Hydrocarbon expected = new Hydrocarbon(
                 true,
                 new Stem(word("hex", 5), 6),
-                List.of(
-                        new FunctionalGroup(
+                new Type.Alkene(
+                        new Group.Complex(
                                 new Locants(List.of(1, 3, 5)),
-                                new MultiplyingAffix(word("tri", 16), 3),
-                                new Suffix(word("en", 19), 2)
-                        )
+                                new MultiplyingAffix(word("tri", 16), 3)
+                        ),
+                        new Suffix(word("en", 19), 2)
                 )
         );
-        assertEquals(expected, compound);
+        assertEquals(expected, hydrocarbon);
     }
 
     @Test
     void shouldParseSimpleAlkyne() {
-        List<Token> tokens = new Lexer("ethyne").scanTokens();
-        Compound compound = new Parser(tokens).parse();
-        Compound expected = new Compound(
+        List<Token> tokens = new Lexer("eth-1-yne").scanTokens();
+        Hydrocarbon hydrocarbon = new Parser(tokens).parse();
+        Hydrocarbon expected = new Hydrocarbon(
                 false,
                 new Stem(word("eth", 0), 2),
-                List.of(
-                        new FunctionalGroup(
-                                null,
-                                null,
-                                new Suffix(word("yn", 3), 3)
-                        )
+                new Type.Alkyne(
+                        new Group.Simple(new Locants(List.of(1))),
+                        new Suffix(word("yn", 6), 3)
                 )
         );
-        assertEquals(expected, compound);
+        assertEquals(expected, hydrocarbon);
     }
 
     @Test
     void shouldParseAlkeneWithSingleLocant() {
         List<Token> tokens = new Lexer("prop-1-ene").scanTokens();
-        Compound compound = new Parser(tokens).parse();
-        Compound expected = new Compound(
+        Hydrocarbon hydrocarbon = new Parser(tokens).parse();
+        Hydrocarbon expected = new Hydrocarbon(
                 false,
                 new Stem(word("prop", 0), 3),
-                List.of(
-                        new FunctionalGroup(
-                                new Locants(List.of(1)),
-                                null,
-                                new Suffix(word("en", 7), 2)
-                        )
+                new Type.Alkene(
+                        new Group.Simple(new Locants(List.of(1))),
+                        new Suffix(word("en", 7), 2)
                 )
         );
-        assertEquals(expected, compound);
+        assertEquals(expected, hydrocarbon);
     }
 
     @Test
     void shouldParseAlkeneWithLocants() {
         List<Token> tokens = new Lexer("propa-1,2-diene").scanTokens();
-        Compound compound = new Parser(tokens).parse();
-        Compound expected = new Compound(
+        Hydrocarbon hydrocarbon = new Parser(tokens).parse();
+        Hydrocarbon expected = new Hydrocarbon(
                 false,
                 new Stem(word("prop", 0), 3),
-                List.of(
-                        new FunctionalGroup(
-                                new Locants(
-                                        List.of(1, 2)),
-                                new MultiplyingAffix(word("di", 10), 2),
-                                new Suffix(word("en", 12), 2)
-                        )
+                new Type.Alkene(
+                        new Group.Complex(
+                                new Locants(List.of(1, 2)),
+                                new MultiplyingAffix(word("di", 10), 2)
+                        ),
+                        new Suffix(word("en", 12), 2)
                 )
         );
-        assertEquals(expected, compound);
+        assertEquals(expected, hydrocarbon);
     }
 
     @Test
-    void shouldParseCompoundWithDifferentBonds() {
+    void shouldParseEnyne() {
         List<Token> tokens = new Lexer("hepta-1,5-dien-3-yne").scanTokens();
-        Compound compound = new Parser(tokens).parse();
-        Compound expected = new Compound(
+        Hydrocarbon hydrocarbon = new Parser(tokens).parse();
+        Hydrocarbon expected = new Hydrocarbon(
                 false,
                 new Stem(word("hept", 0), 7),
-                List.of(
-                        new FunctionalGroup(
-                                new Locants(List.of(1, 5)),
-                                new MultiplyingAffix(word("di", 10), 2),
+                new Type.Enyne(
+                        new Type.Alkene(
+                                new Group.Complex(
+                                        new Locants(List.of(1, 5)),
+                                        new MultiplyingAffix(word("di", 10), 2)
+                                ),
                                 new Suffix(word("en", 12), 2)
                         ),
-                        new FunctionalGroup(
-                                new Locants(List.of(3)),
-                                null,
+                        new Type.Alkyne(
+                                new Group.Enyne(
+                                        new Locants(List.of(3)),
+                                        null
+                                ),
                                 new Suffix(word("yn", 17), 3)
                         )
                 )
         );
-        assertEquals(expected, compound);
+        assertEquals(expected, hydrocarbon);
+    }
+
+    @Test
+    void shouldThrowForInvalidEnyne() {
+        List<Token> tokens = new Lexer("hepta-1,5-diyn-3-ene").scanTokens();
+        ParserException exception = assertThrows(ParserException.class, () -> new Parser(tokens).parse());
+        assertTrue(exception.getMessage().contains("Ending expected"));
+        assertEquals("-", exception.getToken().lexeme());
     }
 
     @Test
@@ -138,20 +139,20 @@ class ParserTest {
     void shouldThrowForMissingSuffix() {
         List<Token> tokens = new Lexer("cyclomethne").scanTokens();
         ParserException exception = assertThrows(ParserException.class, () -> new Parser(tokens).parse());
-        assertTrue(exception.getMessage().contains("Suffix expected"));
+        assertTrue(exception.getMessage().contains("Hyphen expected"));
         assertEquals("n", exception.getToken().lexeme());
     }
 
     @Test
-    void shouldThrowForCompoundWithConnectorButWithSimpleGroup() {
+    void shouldThrowForHydrocarbonWithConnectorButWithSimpleGroup() {
         List<Token> tokens = new Lexer("propa-5-ene").scanTokens();
         ParserException exception = assertThrows(ParserException.class, () -> new Parser(tokens).parse());
-        assertTrue(exception.getMessage().contains("Complex functional group with multiplying affix expected"));
-        assertEquals("en", exception.getToken().lexeme());
+        assertTrue(exception.getMessage().contains("Complex group with multiplying affix expected"));
+        assertEquals("-", exception.getToken().lexeme());
     }
 
     @Test
-    void shouldThrowForCompoundWithoutConnectorButWithComplexGroup() {
+    void shouldThrowForHydrocarbonWithoutConnectorButWithComplexGroup() {
         List<Token> tokens = new Lexer("prop-5-diene").scanTokens();
         ParserException exception = assertThrows(ParserException.class, () -> new Parser(tokens).parse());
         assertTrue(exception.getMessage().contains("Suffix expected"));
@@ -159,7 +160,7 @@ class ParserTest {
     }
 
     @Test
-    void shouldThrowForCompoundWithInvalidEnding() {
+    void shouldThrowForHydrocarbonWithInvalidEnding() {
         List<Token> tokens = new Lexer("prop-5-en").scanTokens();
         ParserException exception = assertThrows(ParserException.class, () -> new Parser(tokens).parse());
         assertTrue(exception.getMessage().contains("Ending expected"));

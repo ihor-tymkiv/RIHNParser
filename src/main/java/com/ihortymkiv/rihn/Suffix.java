@@ -2,16 +2,12 @@ package com.ihortymkiv.rihn;
 
 import java.util.Objects;
 
-public class Suffix extends ASTNode{
+public class Suffix {
     Suffix(Token token, int bondOrder) {
         Objects.requireNonNull(token, "Token cannot be null");
         this.token = token;
         this.bondOrder = bondOrder;
     }
-
-    @Override
-    <R> R accept(ASTNodeVisitor<R> visitor) { return visitor.visit(this); }
-
     final Token token;
     final int bondOrder;
 

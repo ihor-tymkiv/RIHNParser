@@ -5,7 +5,7 @@
  * Legal compounds:
  * - cyclopropane
  * - cyclohexa-1,3,5-triene
- * - ethyne
+ * - eth-1-yne
  * - prop-1-ene
  * - propa-1,2-diene
  * - hex-2-en-4-yne
@@ -13,21 +13,22 @@
  *
  * Legal, however not semantic compounds:
  * - cyclomethane
- * - eth-1-yne
  * - propene
  * - propa-5-diene
- * - hex-2-en-2,3-yne
+ * - hex-2-yn-2,3-ene
  * - hexa-1,3-pentaene
- * - methyne
+ * - meth-1-yne
  *
 **/
-compound                 ::= "cyclo"? stem groups "e"
-groups                   ::= (simple_functional_group | complex_functional_group) functional_group*
-functional_group         ::= locants? multiplying_affix? suffix
-simple_functional_group  ::= locants? suffix
-complex_functional_group ::= "a" locants? multiplying_affix suffix
-locants                  ::= "-" digit ("," digit)* "-"
-stem                     ::= "meth" | "eth" | "prop" | "but" | "pent" | "hex" | "hept" | "oct" | "non" | "dec"
-multiplying_affix        ::= "di" | "tri" | "tetra" | "penta" | "hexa" | "hepta" | "octa" | "nona"
-suffix                   ::= "an" | "en" | "yn"
-digit                    ::= "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+hydrocarbon       ::= "cyclo"? stem ( type_alkane | type_alkene | type_alkyne | type_enyne ) "e"
+type_enyne        ::= ( complex_group | simple_group ) "en" enyne_group "yn"
+type_alkyne       ::= ( complex_group | simple_group ) "yn"
+type_alkene       ::= ( complex_group | simple_group ) "en"
+type_alkane       ::= "an"
+complex_group     ::= "a" locants multiplying_affix
+simple_group      ::= locants
+enyne_group       ::= locants multiplying_affix?
+locants           ::= "-" digit ("," digit)* "-"
+stem              ::= "meth" | "eth" | "prop" | "but" | "pent" | "hex" | "hept" | "oct" | "non" | "dec"
+multiplying_affix ::= "di" | "tri" | "tetra" | "penta" | "hexa" | "hepta" | "octa" | "nona"
+digit             ::= "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"

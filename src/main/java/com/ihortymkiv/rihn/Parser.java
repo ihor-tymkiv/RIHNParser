@@ -16,22 +16,21 @@ class Parser {
         this.tokens = tokens;
     }
 
-    Compound parse() {
-        return compound();
+    Hydrocarbon parse() {
+        return hydrocarbon();
     }
 
-    private Compound compound() {
+    private Hydrocarbon hydrocarbon() {
         boolean isCyclic = match(CYCLO);
         Stem stem = stem();
-        boolean hasConnector = connector();
-        List<FunctionalGroup> groups = groups(hasConnector);
+        Type type = type();
         consume(ENDING, "Ending expected");
 
         if (!isAtEnd()) {
             throw error("EOF expected after ending", peek());
         }
 
-        return new Compound(isCyclic, stem, groups);
+        return new Hydrocarbon(isCyclic, stem, type);
     }
 
     private Stem stem() {
@@ -63,45 +62,59 @@ class Parser {
         return false;
     }
 
-    private List<FunctionalGroup> groups(boolean hasConnector) {
-        List<FunctionalGroup> groups = new ArrayList<>();
+    private Type type() {
+        if (check(WORD)) {
+            Token token = advance();
+            Token suffix = extractKeywordFromWord(token, Set.of("an"));
+            if (Objects.nonNull(suffix)) {
+                return new Type.Alkane();
+            }
+        }
 
-        if (hasConnector) {
-            groups.add(complexFunctionalGroup());
+        Group group = connector() ? complexGroup() : simpleGroup();
+        Suffix firstSuffix = suffix();
+        if (firstSuffix.bondOrder == 2) {
+            if (check(HYPHEN)) {
+                Group secondGroup = enyneGroup();
+                Suffix secondSuffix = suffix();
+
+                if (secondSuffix.bondOrder != 3) {
+                    throw new SemanticAnalyzerException("Unexpected suffix, expected 'yn'.", previous());
+                }
+
+                return new Type.Enyne(
+                        new Type.Alkene(group, firstSuffix),
+                        new Type.Alkyne(secondGroup, secondSuffix)
+                );
+            }
+            return new Type.Alkene(group, firstSuffix);
+        } else if (firstSuffix.bondOrder == 3) {
+            return new Type.Alkyne(group, firstSuffix);
         } else {
-            groups.add(simpleFunctionalGroup());
+            throw new SemanticAnalyzerException("Unexpected suffix, expected 'en' or 'yn'.", previous());
         }
-        while (!isAtEnd() && !check(ENDING)) {
-            groups.add(functionalGroup());
-        }
-
-        return groups;
     }
 
-    private FunctionalGroup functionalGroup() {
-        Locants locants = match(HYPHEN) ? locants() : null;
+    private Group enyneGroup() {
+        Locants locants = locants();
         MultiplyingAffix multiplyingAffix = multiplyingAffix();
-        Suffix suffix = suffix();
-
-        return new FunctionalGroup(locants, multiplyingAffix, suffix);
+        return new Group.Enyne(locants, multiplyingAffix);
     }
 
-    private FunctionalGroup simpleFunctionalGroup() {
-        Locants locants = match(HYPHEN) ? locants() : null;
-        Suffix suffix = suffix();
-        return new FunctionalGroup(locants, null, suffix);
-    }
-
-    private FunctionalGroup complexFunctionalGroup() {
-        Locants locants = match(HYPHEN) ? locants() : null;
+    private Group complexGroup() {
+        Locants locants = locants();
         MultiplyingAffix multiplyingAffix = multiplyingAffix();
-        Suffix suffix = suffix();
 
         if (Objects.isNull(multiplyingAffix)) {
-            throw error("Complex functional group with multiplying affix expected after connector 'a'", previous());
+            throw error("Complex group with multiplying affix expected after connector 'a'", previous());
         }
 
-        return new FunctionalGroup(locants, multiplyingAffix, suffix);
+        return new Group.Complex(locants, multiplyingAffix);
+    }
+
+    private Group simpleGroup() {
+        Locants locants = locants();
+        return new Group.Simple(locants);
     }
 
     private MultiplyingAffix multiplyingAffix() {
@@ -129,6 +142,7 @@ class Parser {
     }
 
     private Locants locants() {
+        consume(HYPHEN, "Hyphen expected");
         List<Integer> locants = new ArrayList<>();
         Token token = consume(DIGIT, "Digit expected after hyphen");
         locants.add(Integer.parseInt(token.lexeme()));

@@ -2,16 +2,12 @@ package com.ihortymkiv.rihn;
 
 import java.util.Objects;
 
-public class MultiplyingAffix extends ASTNode {
+public class MultiplyingAffix {
     MultiplyingAffix(Token token, int value) {
         Objects.requireNonNull(token, "Token must not be null");
         this.token = token;
         this.value = value;
     }
-
-    @Override
-    <R> R accept(ASTNodeVisitor<R> visitor) { return visitor.visit(this); }
-
     final Token token;
     final int value;
 
