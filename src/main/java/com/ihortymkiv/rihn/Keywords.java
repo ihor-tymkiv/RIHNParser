@@ -33,14 +33,5 @@ final class Keywords {
             "nona", 9
     );
 
-    /**
-     * Map with suffixes as keys and bond orders as values.
-     */
-    static final Map<String, Integer> SUFFIXES = Map.of(
-            "an", 1,
-            "en", 2,
-            "yn", 3
-    );
-
     private Keywords() {} // avoid instantiation
 }

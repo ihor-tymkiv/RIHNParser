@@ -22,14 +22,11 @@ abstract class Type {
     }
 
     static class Alkene extends Type {
-        Alkene(Group group, Suffix suffix) {
+        Alkene(Group group) {
             Objects.requireNonNull(group, "Group cannot be null.");
-            Objects.requireNonNull(suffix, "Suffix cannot be null.");
             this.group = group;
-            this.suffix = suffix;
         }
         final Group group;
-        final Suffix suffix;
 
         @Override
         <R> R accept(Visitor<R> visitor) { return visitor.visit(this); }
@@ -38,24 +35,21 @@ abstract class Type {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (!(o instanceof Alkene alkene)) return false;
-            return Objects.equals(group, alkene.group) && Objects.equals(suffix, alkene.suffix);
+            return Objects.equals(group, alkene.group);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(group, suffix);
+            return Objects.hash(group);
         }
     }
 
     static class Alkyne extends Type {
-        Alkyne(Group group, Suffix suffix) {
+        Alkyne(Group group) {
             Objects.requireNonNull(group, "Group cannot be null.");
-            Objects.requireNonNull(suffix, "Suffix cannot be null.");
             this.group = group;
-            this.suffix = suffix;
         }
         final Group group;
-        final Suffix suffix;
 
         @Override
         <R> R accept(Visitor<R> visitor) { return visitor.visit(this); }
@@ -64,12 +58,12 @@ abstract class Type {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (!(o instanceof Alkyne alkyne)) return false;
-            return Objects.equals(group, alkyne.group) && Objects.equals(suffix, alkyne.suffix);
+            return Objects.equals(group, alkyne.group);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(group, suffix);
+            return Objects.hash(group);
         }
     }
 

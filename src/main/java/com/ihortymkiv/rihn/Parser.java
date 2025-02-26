@@ -72,27 +72,30 @@ class Parser {
         }
 
         Group group = connector() ? complexGroup() : simpleGroup();
-        Suffix firstSuffix = suffix();
-        if (firstSuffix.bondOrder == 2) {
+        Token token = consume(WORD, "Keyword expected");
+        Token firstSuffix = extractKeywordFromWord(token, Set.of("en", "yn"));
+        if (Objects.isNull(firstSuffix)) {
+            throw error("Suffix 'en' or 'yn' expected", token);
+        }
+
+        if (firstSuffix.lexeme().equals("en")) {
             if (check(HYPHEN)) {
                 Group secondGroup = enyneGroup();
-                Suffix secondSuffix = suffix();
+                token = consume(WORD, "Keyword expected");
+                Token secondSuffix = extractKeywordFromWord(token, Set.of("yn"));
 
-                if (secondSuffix.bondOrder != 3) {
-                    throw new SemanticAnalyzerException("Unexpected suffix, expected 'yn'.", previous());
+                if (Objects.isNull(secondSuffix)) {
+                    throw error("Suffix 'yn' expected", token);
                 }
 
                 return new Type.Enyne(
-                        new Type.Alkene(group, firstSuffix),
-                        new Type.Alkyne(secondGroup, secondSuffix)
+                        new Type.Alkene(group),
+                        new Type.Alkyne(secondGroup)
                 );
             }
-            return new Type.Alkene(group, firstSuffix);
-        } else if (firstSuffix.bondOrder == 3) {
-            return new Type.Alkyne(group, firstSuffix);
-        } else {
-            throw new SemanticAnalyzerException("Unexpected suffix, expected 'en' or 'yn'.", previous());
+            return new Type.Alkene(group);
         }
+        return new Type.Alkyne(group);
     }
 
     private Group enyneGroup() {
@@ -128,17 +131,6 @@ class Parser {
             }
         }
         return null;
-    }
-
-    private Suffix suffix() {
-        Token token = consume(WORD, "Keyword expected");
-        Token suffix = extractKeywordFromWord(token, Keywords.SUFFIXES.keySet());
-
-        if (Objects.isNull(suffix)) {
-            throw error("Suffix expected", token);
-        }
-
-        return new Suffix(suffix, Keywords.SUFFIXES.get(suffix.lexeme()));
     }
 
     private Locants locants() {

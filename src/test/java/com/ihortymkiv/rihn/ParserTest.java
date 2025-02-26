@@ -37,8 +37,7 @@ class ParserTest {
                         new Group.Complex(
                                 new Locants(List.of(1, 3, 5)),
                                 new MultiplyingAffix(word("tri", 16), 3)
-                        ),
-                        new Suffix(word("en", 19), 2)
+                        )
                 )
         );
         assertEquals(expected, hydrocarbon);
@@ -52,8 +51,7 @@ class ParserTest {
                 false,
                 new Stem(word("eth", 0), 2),
                 new Type.Alkyne(
-                        new Group.Simple(new Locants(List.of(1))),
-                        new Suffix(word("yn", 6), 3)
+                        new Group.Simple(new Locants(List.of(1)))
                 )
         );
         assertEquals(expected, hydrocarbon);
@@ -67,8 +65,7 @@ class ParserTest {
                 false,
                 new Stem(word("prop", 0), 3),
                 new Type.Alkene(
-                        new Group.Simple(new Locants(List.of(1))),
-                        new Suffix(word("en", 7), 2)
+                        new Group.Simple(new Locants(List.of(1)))
                 )
         );
         assertEquals(expected, hydrocarbon);
@@ -85,8 +82,7 @@ class ParserTest {
                         new Group.Complex(
                                 new Locants(List.of(1, 2)),
                                 new MultiplyingAffix(word("di", 10), 2)
-                        ),
-                        new Suffix(word("en", 12), 2)
+                        )
                 )
         );
         assertEquals(expected, hydrocarbon);
@@ -104,15 +100,13 @@ class ParserTest {
                                 new Group.Complex(
                                         new Locants(List.of(1, 5)),
                                         new MultiplyingAffix(word("di", 10), 2)
-                                ),
-                                new Suffix(word("en", 12), 2)
+                                )
                         ),
                         new Type.Alkyne(
                                 new Group.Enyne(
                                         new Locants(List.of(3)),
                                         null
-                                ),
-                                new Suffix(word("yn", 17), 3)
+                                )
                         )
                 )
         );
@@ -155,7 +149,7 @@ class ParserTest {
     void shouldThrowForHydrocarbonWithoutConnectorButWithComplexGroup() {
         List<Token> tokens = new Lexer("prop-5-diene").scanTokens();
         ParserException exception = assertThrows(ParserException.class, () -> new Parser(tokens).parse());
-        assertTrue(exception.getMessage().contains("Suffix expected"));
+        assertTrue(exception.getMessage().contains("Suffix 'en' or 'yn' expected"));
         assertEquals("dien", exception.getToken().lexeme());
     }
 
