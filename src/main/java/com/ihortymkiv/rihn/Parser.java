@@ -47,18 +47,21 @@ class Parser {
     private boolean connector() {
         Function<String, Boolean> checkCondition = s -> s.startsWith("a") && !s.startsWith("an");
 
-        if (check(WORD)) {
-            Token token = advance();
-            if (checkCondition.apply(token.lexeme())) {
-                String remainingWord = token.lexeme().substring(1);
-                tokens.set(current - 1, new Token(WORD, "a", token.position()));
-                if (!remainingWord.isEmpty()) {
-                    tokens.add(current, new Token(WORD, remainingWord, token.position() + 1));
-                }
-                return true;
-            }
-            current--;
+        if (!check(WORD)) {
+            return false;
         }
+
+        Token token = advance();
+        if (checkCondition.apply(token.lexeme())) {
+            String remainingWord = token.lexeme().substring(1);
+            tokens.set(current - 1, new Token(WORD, "a", token.position()));
+            if (!remainingWord.isEmpty()) {
+                tokens.add(current, new Token(WORD, remainingWord, token.position() + 1));
+            }
+            return true;
+        }
+        
+        current--;
         return false;
     }
 
@@ -79,21 +82,19 @@ class Parser {
         }
 
         if (firstSuffix.lexeme().equals("en")) {
-            if (check(HYPHEN)) {
-                Group secondGroup = enyneGroup();
-                token = consume(WORD, "Keyword expected");
-                Token secondSuffix = extractKeywordFromWord(token, Set.of("yn"));
-
-                if (Objects.isNull(secondSuffix)) {
-                    throw error("Suffix 'yn' expected", token);
-                }
-
-                return new Type.Enyne(
-                        new Type.Alkene(group),
-                        new Type.Alkyne(secondGroup)
-                );
+            if (!check(HYPHEN)) {
+                return new Type.Alkene(group);
             }
-            return new Type.Alkene(group);
+
+            Group secondGroup = enyneGroup();
+            token = consume(WORD, "Keyword expected");
+            Token secondSuffix = extractKeywordFromWord(token, Set.of("yn"));
+
+            if (Objects.isNull(secondSuffix)) {
+                throw error("Suffix 'yn' expected", token);
+            }
+
+            return new Type.Enyne(new Type.Alkene(group), new Type.Alkyne(secondGroup));
         }
         return new Type.Alkyne(group);
     }
