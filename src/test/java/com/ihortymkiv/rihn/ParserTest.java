@@ -34,7 +34,7 @@ class ParserTest {
                 true,
                 new Stem(word("hex", 5), 6),
                 new Type.Alkene(
-                        new Group.Complex(
+                        new Group(
                                 new Locants(List.of(1, 3, 5)),
                                 new MultiplyingAffix(word("tri", 16), 3)
                         )
@@ -51,7 +51,7 @@ class ParserTest {
                 false,
                 new Stem(word("eth", 0), 2),
                 new Type.Alkyne(
-                        new Group.Simple(new Locants(List.of(1)))
+                        new Group(new Locants(List.of(1)), null)
                 )
         );
         assertEquals(expected, hydrocarbon);
@@ -65,7 +65,7 @@ class ParserTest {
                 false,
                 new Stem(word("prop", 0), 3),
                 new Type.Alkene(
-                        new Group.Simple(new Locants(List.of(1)))
+                        new Group(new Locants(List.of(1)), null)
                 )
         );
         assertEquals(expected, hydrocarbon);
@@ -79,7 +79,7 @@ class ParserTest {
                 false,
                 new Stem(word("prop", 0), 3),
                 new Type.Alkene(
-                        new Group.Complex(
+                        new Group(
                                 new Locants(List.of(1, 2)),
                                 new MultiplyingAffix(word("di", 10), 2)
                         )
@@ -97,13 +97,13 @@ class ParserTest {
                 new Stem(word("hept", 0), 7),
                 new Type.Enyne(
                         new Type.Alkene(
-                                new Group.Complex(
+                                new Group(
                                         new Locants(List.of(1, 5)),
                                         new MultiplyingAffix(word("di", 10), 2)
                                 )
                         ),
                         new Type.Alkyne(
-                                new Group.Enyne(
+                                new Group(
                                         new Locants(List.of(3)),
                                         null
                                 )

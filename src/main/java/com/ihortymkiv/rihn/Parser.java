@@ -102,7 +102,7 @@ class Parser {
     private Group enyneGroup() {
         Locants locants = locants();
         MultiplyingAffix multiplyingAffix = multiplyingAffix();
-        return new Group.Enyne(locants, multiplyingAffix);
+        return new Group(locants, multiplyingAffix);
     }
 
     private Group complexGroup() {
@@ -113,12 +113,12 @@ class Parser {
             throw error("Complex group with multiplying affix expected after connector 'a'", previous());
         }
 
-        return new Group.Complex(locants, multiplyingAffix);
+        return new Group(locants, multiplyingAffix);
     }
 
     private Group simpleGroup() {
         Locants locants = locants();
-        return new Group.Simple(locants);
+        return new Group(locants, null);
     }
 
     private MultiplyingAffix multiplyingAffix() {
