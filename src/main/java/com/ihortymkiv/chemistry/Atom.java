@@ -88,6 +88,10 @@ public class Atom {
         return this.bonds.stream().map(Bond::to).toList();
     }
 
+    public int getValence() {
+        return this.valence;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Atom atom) {
