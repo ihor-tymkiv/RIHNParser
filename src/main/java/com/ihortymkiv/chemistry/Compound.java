@@ -6,14 +6,14 @@ import java.util.*;
  * Graph representation of a chemical compound.
  */
 public class Compound {
-    private final HashSet<Atom> atoms = new HashSet<>();
+    private final List<Atom> atoms = new ArrayList<>();
 
     /**
      * Return a copy of the set containing atoms.
      * @return copy of the set of atoms
      */
-    public HashSet<Atom> getAtoms() {
-        return new HashSet<>(this.atoms);
+    public List<Atom> getAtoms() {
+        return new ArrayList<>(this.atoms);
     }
 
     public void addAtom(Atom atom) {

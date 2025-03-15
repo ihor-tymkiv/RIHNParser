@@ -96,10 +96,24 @@ public class Atom {
         return false;
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
+
     /**
      * Representation of a bond.<p>
      * <p>
      * Serves as an edge in our graph representation of a chemical compound, connecting {@code Atom} vertices.
      */
     private record Bond(Atom from, Atom to, int bondOrder) {}
+
+    @Override
+    public String toString() {
+        return "Atom{" +
+               "id=" + id +
+               ", chemicalElement=" + chemicalElement +
+               ", valence=" + valence +
+               '}';
+    }
 }
