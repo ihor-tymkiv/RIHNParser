@@ -88,6 +88,10 @@ public class Atom {
         return this.bonds.stream().map(Bond::to).toList();
     }
 
+    public List<Bond> getBonds() {
+        return this.bonds;
+    }
+
     public int getValence() {
         return this.valence;
     }
@@ -110,7 +114,7 @@ public class Atom {
      * <p>
      * Serves as an edge in our graph representation of a chemical compound, connecting {@code Atom} vertices.
      */
-    private record Bond(Atom from, Atom to, int bondOrder) {}
+    public record Bond(Atom from, Atom to, int bondOrder) {}
 
     @Override
     public String toString() {
