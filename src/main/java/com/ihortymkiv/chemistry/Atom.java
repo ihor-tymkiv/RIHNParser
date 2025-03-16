@@ -96,6 +96,10 @@ public class Atom {
         return this.valence;
     }
 
+    public int getId() {
+        return this.id;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Atom atom) {

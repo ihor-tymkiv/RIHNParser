@@ -27,7 +27,7 @@ public class Compound {
      * @param start start node
      * @param atomConsumer function that takes a node
      */
-    static public void BFS(Atom start, Consumer<Atom> atomConsumer) {
+    public static void BFS(Atom start, Consumer<Atom> atomConsumer) {
         Queue<Atom> queue = new LinkedList<>();
         HashSet<Atom> seen = new HashSet<>();
         seen.add(start);
