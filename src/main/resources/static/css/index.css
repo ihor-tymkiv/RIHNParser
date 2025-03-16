@@ -1,0 +1,11 @@
+.container {
+    max-width: 950px;
+}
+
+.center {
+    text-align: center;
+}
+
+.error-text {
+    color: #f03e3e;
+}
