@@ -175,4 +175,11 @@ class ParserTest {
         assertTrue(exception.getMessage().contains("Digit expected"));
     }
 
+    @Test
+    void shouldThrowForMultipleLocantsWhenSingleExpected() {
+        List<Token> tokens = new Lexer("dec-1,2,3,4,5,6,7,8,9-ene").scanTokens();
+        ParserException exception = assertThrows(ParserException.class, () -> new Parser(tokens).parse());
+        assertTrue(exception.getMessage().contains("Only one locant expected"));
+    }
+
 }

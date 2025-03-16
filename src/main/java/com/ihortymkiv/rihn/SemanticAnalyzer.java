@@ -5,8 +5,8 @@ import com.ihortymkiv.chemistry.ChemicalElement;
 import java.util.*;
 
 class SemanticAnalyzer implements Type.Visitor<Void> {
-    static private int ALKENE_BOND_ORDER = 2;
-    static private int ALKYNE_BOND_ORDER = 3;
+    private static int ALKENE_BOND_ORDER = 2;
+    private static int ALKYNE_BOND_ORDER = 3;
     private int carbonCount;
     private Map<Integer, Integer> carbonValencies;
 
@@ -85,8 +85,8 @@ class SemanticAnalyzer implements Type.Visitor<Void> {
     }
 
     private void analyzeLocants(Locants locants, int bondOrder) {
-        if (carbonCount < 3) {
-            throw new SemanticAnalyzerException("Can't specify locants for a carbon count less than 3");
+        if (carbonCount < 2) {
+            throw new SemanticAnalyzerException("Can't specify locants for a carbon count less than 2");
         }
         if (!locants.locants.stream().sorted().toList().equals(locants.locants)) {
             throw new SemanticAnalyzerException("Locants must be in order of increasing value");

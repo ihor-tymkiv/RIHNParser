@@ -117,7 +117,7 @@ class Parser {
     }
 
     private Group simpleGroup() {
-        Locants locants = locants();
+        Locants locants = locant();
         return new Group(locants, null);
     }
 
@@ -132,6 +132,14 @@ class Parser {
             }
         }
         return null;
+    }
+
+    private Locants locant() {
+        Locants locants = locants();
+        if (locants.locants.size() != 1) {
+            throw error("Only one locant expected", previous());
+        }
+        return locants;
     }
 
     private Locants locants() {

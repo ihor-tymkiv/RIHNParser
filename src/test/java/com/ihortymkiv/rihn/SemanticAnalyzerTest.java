@@ -27,7 +27,7 @@ class SemanticAnalyzerTest {
     @Test
     void shouldThrowForDuplicateLocant() {
         SemanticAnalyzerException exception = assertThrows(
-                SemanticAnalyzerException.class, () -> semanticAnalyzer.analyze(hydrocarbon("pent-3,3-ene"))
+                SemanticAnalyzerException.class, () -> semanticAnalyzer.analyze(hydrocarbon("penta-3,3-diene"))
         );
         assertTrue(exception.getMessage().contains("Locant 3 has already been specified"));
     }
@@ -35,7 +35,7 @@ class SemanticAnalyzerTest {
     @Test
     void shouldThrowForInvalidOrder() {
         SemanticAnalyzerException exception = assertThrows(
-                SemanticAnalyzerException.class, () -> semanticAnalyzer.analyze(hydrocarbon("pent-3,2-ene"))
+                SemanticAnalyzerException.class, () -> semanticAnalyzer.analyze(hydrocarbon("penta-3,2-diene"))
         );
         assertTrue(exception.getMessage().contains("Locants must be in order of increasing value"));
     }
@@ -58,7 +58,7 @@ class SemanticAnalyzerTest {
         SemanticAnalyzerException exception = assertThrows(
                 SemanticAnalyzerException.class, () -> semanticAnalyzer.analyze(hydrocarbon("meth-1-yne"))
         );
-        assertTrue(exception.getMessage().contains("Can't specify locants for a carbon count less than 3"));
+        assertTrue(exception.getMessage().contains("Can't specify locants for a carbon count less than 2"));
     }
 
     @Test
