@@ -3,6 +3,9 @@ package com.ihortymkiv.rihn;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * AST node representing a list of locants (e.g., "1", "1,2") parsed from the input.
+ */
 class Locants {
     Locants(List<Integer> locants) {
         Objects.requireNonNull(locants, "Locants cannot be null.");

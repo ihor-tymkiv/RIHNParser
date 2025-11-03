@@ -2,7 +2,17 @@ package com.ihortymkiv.rihn;
 
 import java.util.Objects;
 
+/**
+ * An abstract base class for the different types of hydrocarbons (e.g., Alkane, Alkene).
+ * This is a core component of the AST and uses the Visitor pattern (see {@link Type.Visitor})
+ * to allow classes like {@link SemanticAnalyzer} and {@link CompoundGenerator}
+ * to perform operations based on the specific hydrocarbon type.
+ */
 abstract class Type {
+    /**
+     * Visitor interface for the {@link Type} hierarchy.
+     * @param <R> The return type of the visit methods.
+     */
     interface Visitor<R> {
         R visit(Alkane alkane);
         R visit(Alkene alkene);

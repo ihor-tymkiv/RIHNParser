@@ -2,6 +2,10 @@ package com.ihortymkiv.rihn;
 
 import java.util.Objects;
 
+/**
+ * AST node representing a functional group, combining locants
+ * and an optional multiplying affix (e.g., "-1,2-di").
+ */
 class Group {
     Group(Locants locants, MultiplyingAffix multiplyingAffix) {
         Objects.requireNonNull(locants, "Locants cannot be null.");

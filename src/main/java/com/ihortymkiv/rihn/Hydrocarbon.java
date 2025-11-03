@@ -2,6 +2,11 @@ package com.ihortymkiv.rihn;
 
 import java.util.Objects;
 
+/**
+ * Represents the root node of the Abstract Syntax Tree (AST) for a hydrocarbon.
+ * This class holds the core components parsed from the input string:
+ * whether it's cyclic, its main carbon stem, and its chemical type.
+ */
 class Hydrocarbon {
     Hydrocarbon(boolean isCyclic, Stem stem, Type type) {
         Objects.requireNonNull(stem, "Stem cannot be null.");

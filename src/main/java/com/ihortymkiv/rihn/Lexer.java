@@ -5,6 +5,13 @@ import java.util.List;
 
 import static com.ihortymkiv.rihn.TokenType.*;
 
+/**
+ * The Lexical Analyzer (Lexer) for the RIHNParser.
+ * <p>
+ * This class is responsible for the first stage of compilation. It scans the
+ * input source string (a hydrocarbon name) and converts it into a sequence
+ * of {@link Token} objects, which can then be consumed by the {@link Parser}.
+ */
 class Lexer {
     private final String source;
     private final List<Token> tokens = new ArrayList<>();
@@ -15,6 +22,12 @@ class Lexer {
         this.source = source;
     }
 
+    /**
+     * Scans the entire source string and produces a list of tokens.
+     *
+     * @return A {@link List} of {@link Token}s, ending with an {@link TokenType#EOF} token.
+     * @throws LexerException if an unexpected character is encountered.
+     */
     List<Token> scanTokens() {
         while (!isAtEnd()) {
             start = current;

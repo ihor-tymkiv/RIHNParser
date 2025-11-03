@@ -8,12 +8,30 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * The "Code Generator" for the RIHNParser.
+ * <p>
+ * This class traverses the semantically validated {@link Hydrocarbon} AST
+ * and builds the final {@link Compound} graph. This is the final stage of
+ * the parsing pipeline.
+ * <p>
+ * It uses the Visitor pattern to collect locants from the {@link Type} nodes,
+ * then builds the carbon chain with appropriate bonds. Finally, it "fills"
+ * the remaining valency of each carbon atom with hydrogen atoms.
+ */
 class CompoundGenerator implements Type.Visitor<Void> {
     private Hydrocarbon hydrocarbon;
     private Compound compound;
     private List<Integer> alkeneLocants = new ArrayList<>();
     private List<Integer> alkyneLocants = new ArrayList<>();
 
+    /**
+     * Generates a {@link Compound} graph from a {@link Hydrocarbon} AST.
+     *
+     * @param hydrocarbon The validated AST.
+     * @return A {@link Compound} object representing the complete molecule,
+     * including hydrogen atoms.
+     */
     Compound generateGraph(Hydrocarbon hydrocarbon) {
         this.hydrocarbon = hydrocarbon;
 
@@ -56,23 +74,35 @@ class CompoundGenerator implements Type.Visitor<Void> {
         }
     }
 
+    /**
+     * Visits an Alkane type. (Does nothing, no double/triple bonds to add).
+     */
     @Override
     public Void visit(Type.Alkane alkane) {
         return null;
     }
 
+    /**
+     * Visits an Alkene type, collecting its double-bond locants.
+     */
     @Override
     public Void visit(Type.Alkene alkene) {
         alkeneLocants = alkene.group.locants.locants;
         return null;
     }
 
+    /**
+     * Visits an Alkyne type, collecting its triple-bond locants.
+     */
     @Override
     public Void visit(Type.Alkyne alkyne) {
         alkyneLocants = alkyne.group.locants.locants;
         return null;
     }
 
+    /**
+     * Visits an Enyne type, collecting locants from both its alkene and alkyne subgroups.
+     */
     @Override
     public Void visit(Type.Enyne enyne) {
         enyne.alkene.accept(this);

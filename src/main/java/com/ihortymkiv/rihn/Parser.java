@@ -8,14 +8,34 @@ import java.util.function.Function;
 
 import static com.ihortymkiv.rihn.TokenType.*;
 
+/**
+ * The Syntax Analyzer (Parser) for the RIHNParser.
+ * <p>
+ * This class implements a top-down recursive descent parser based on the project's EBNF grammar.
+ * It consumes the list of {@link Token}s from the {@link Lexer} and produces
+ * an Abstract Syntax Tree (AST), represented by the {@link Hydrocarbon} class.
+ * <p>
+ * It is responsible for enforcing the grammatical structure of the language.
+ */
 class Parser {
     private final List<Token> tokens;
     private int current = 0;
 
+    /**
+     * Constructs a new Parser.
+     * @param tokens The list of tokens from the {@link Lexer}.
+     */
     Parser(List<Token> tokens) {
         this.tokens = tokens;
     }
 
+    /**
+     * Parses the token stream into a {@link Hydrocarbon} AST.
+     * This is the main entry point for the parser.
+     *
+     * @return The root node of the AST, a {@link Hydrocarbon} object.
+     * @throws ParserException if the token stream violates the grammar's syntax.
+     */
     Hydrocarbon parse() {
         return hydrocarbon();
     }

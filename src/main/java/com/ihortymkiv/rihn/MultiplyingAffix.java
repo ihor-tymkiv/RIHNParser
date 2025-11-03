@@ -2,6 +2,10 @@ package com.ihortymkiv.rihn;
 
 import java.util.Objects;
 
+/**
+ * AST node representing a multiplying affix (e.g., "di", "tri")
+ * and its corresponding integer value.
+ */
 public class MultiplyingAffix {
     MultiplyingAffix(Token token, int value) {
         Objects.requireNonNull(token, "Token must not be null");

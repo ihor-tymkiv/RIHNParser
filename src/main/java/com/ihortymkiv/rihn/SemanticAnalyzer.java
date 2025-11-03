@@ -4,12 +4,35 @@ import com.ihortymkiv.chemistry.ChemicalElement;
 
 import java.util.*;
 
+/**
+ * The Semantic Analyzer for the RIHNParser.
+ * <p>
+ * This class traverses the {@link Hydrocarbon} AST produced by the {@link Parser}
+ * to enforce chemical and IUPAC naming rules (semantics) that cannot be captured by the grammar alone.
+ * <p>
+ * It checks for:
+ * <ul>
+ * <li>Carbon valency constraints (no carbon can have more than 4 bonds).</li>
+ * <li>Rules for cyclic compounds (must have >= 3 carbons).</li>
+ * <li>Locant validation (in range, not duplicated, correct order).</li>
+ * <li>The "lowest set of locants" rule.</li>
+ * <li>Correct multiplier-to-locant count (e.g., "diene" requires two locants).</li>
+ * </ul>
+ * <p>
+ * It uses the Visitor pattern to traverse the {@link Type} nodes of the AST.
+ */
 class SemanticAnalyzer implements Type.Visitor<Void> {
     private static int ALKENE_BOND_ORDER = 2;
     private static int ALKYNE_BOND_ORDER = 3;
     private int carbonCount;
     private Map<Integer, Integer> carbonValencies;
 
+    /**
+     * Analyzes the {@link Hydrocarbon} AST for semantic and chemical validity.
+     *
+     * @param hydrocarbon The AST to analyze.
+     * @throws SemanticAnalyzerException if any chemical or naming rule is violated.
+     */
     public void analyze(Hydrocarbon hydrocarbon) {
         carbonValencies = new HashMap<>();
         carbonCount = hydrocarbon.stem.value;
@@ -19,11 +42,17 @@ class SemanticAnalyzer implements Type.Visitor<Void> {
         hydrocarbon.type.accept(this);
     }
 
+    /**
+     * Visits an Alkane type. (Does nothing, as Alkanes have no locants to check).
+     */
     @Override
     public Void visit(Type.Alkane alkane) {
         return null;
     }
 
+    /**
+     * Visits an Alkene type, analyzing its locants and multipliers.
+     */
     @Override
     public Void visit(Type.Alkene alkene) {
         analyzeGroup(alkene.group, ALKENE_BOND_ORDER);
@@ -32,6 +61,9 @@ class SemanticAnalyzer implements Type.Visitor<Void> {
         return null;
     }
 
+    /**
+     * Visits an Alkyne type, analyzing its locants and multipliers.
+     */
     @Override
     public Void visit(Type.Alkyne alkyne) {
         analyzeGroup(alkyne.group, ALKYNE_BOND_ORDER);
@@ -40,6 +72,9 @@ class SemanticAnalyzer implements Type.Visitor<Void> {
         return null;
     }
 
+    /**
+     * Visits an Enyne type, analyzing combined locant rules for both alkene and alkyne groups.
+     */
     @Override
     public Void visit(Type.Enyne enyne) {
         Group alkeneGroup = enyne.alkene.group;

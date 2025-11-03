@@ -2,6 +2,11 @@ package com.ihortymkiv.rihn;
 
 import java.util.Map;
 
+/**
+ * A utility class holding static maps for IUPAC keywords.
+ * This provides a single source of truth for stems (e.g., "meth" -> 1)
+ * and multiplying affixes (e.g., "di" -> 2).
+ */
 final class Keywords {
     /**
      * Map with stems as keys and respective numbers as values.

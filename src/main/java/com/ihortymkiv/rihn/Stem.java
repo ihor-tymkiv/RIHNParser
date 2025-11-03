@@ -2,6 +2,10 @@ package com.ihortymkiv.rihn;
 
 import java.util.Objects;
 
+/**
+ * AST node representing the stem of the hydrocarbon name (e.g., "meth", "eth")
+ * and its corresponding carbon count.
+ */
 class Stem {
     Stem(Token token, int value) {
         Objects.requireNonNull(token, "Token cannot be null.");
